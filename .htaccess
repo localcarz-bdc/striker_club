@@ -1,0 +1,15 @@
+RewriteEngine On
+
+# Redirect to www
+RewriteCond %{HTTP_HOST} ^strikersclub.org [NC]
+RewriteRule ^(.*)$ https://www.strikersclub.org/$1 [L,R=301]
+
+# Existing rules
+RewriteCond %{REQUEST_URI} !^public
+RewriteRule ^(.*)$ public/$1 [L]
+
+
+##Previous Code
+#RewriteEngine on
+#RewriteCond %{REQUEST_URI} !^public
+#RewriteRule ^(.*)$ public/$1 [L]

@@ -1,0 +1,83 @@
+* Event listener add with example
+=============================================
+
+01. event listener create 
+    php artisan make:event MailSendIndividual
+
+02. call event in the controller specific method/function 
+    make new event object 
+    and pass neccessary data by param
+    import object obviously
+
+        example :
+        /*
+                $eventMailData =[
+                'name'=> $request->name,
+                // 'id'=> 31,
+                // 'password'=> 12345678,
+            ];
+
+            event(new MailSendIndividual($eventMailData));
+        */
+03. create listener with two different CLI command
+        php  artisan make:listener MailforIndividualListener // without event 
+                        or
+        php  artisan make:listener MailforIndividualListener --event=MailSendIndividual //with event
+
+04. go to app\provider\EventServiceProvider for register listener or make connection
+        example : 
+            /*
+                protected $listen = [
+                    Registered::class => [
+                        SendEmailVerificationNotification::class,
+                    ],
+                    \App\Events\MailSendIndividual::class => [
+                        \App\Listeners\MailforIndividualListener::class,
+                    ],
+                ];
+            */
+ 05. go to event and call constructor with public access modifier 
+
+ 06. go to service and execute code to run or send mail 
+
+        remind that you get data in array and check proper data you get or not
+
+
+** Add queue for job sheduling as like multiple mail sending 
+=========================================================================
+
+01. make queue table 
+    php artisan queue:table
+
+02. and run migrate or specific migrate file 
+    example :
+        /*
+            php artisan migrate --path=/database/migrations/2024_01_24_092818_create_jobs_table.php
+        */
+03. search .env file and find (# QUEUE_CONNECTION=sync) and refactor # QUEUE_CONNECTION=database
+
+    example : QUEUE_CONNECTION=sync > QUEUE_CONNECTION=database
+
+04. now implements shouldQueue in where you need 
+    example : I use it contactMail where have mail blade file , envelop and attachment
+
+05. now run igt manually 
+    php artisan queue:listen
+    but it run it again and again 
+
+
+
+*** if run instatnt jobs than  
+======================================
+
+01. inserted data events make 
+    php artisan make:event QueueDataInserted
+    copy exact QueueDataInserted the file
+
+02. make listener for QueueDataInserted
+    php artisan make:listener ProcessQueueData --event=QueueDataInserted
+    copy exact ProcessQueueData the file
+
+03. make another event for empty queue 
+    php artisan make:event QueueEmpty
+
